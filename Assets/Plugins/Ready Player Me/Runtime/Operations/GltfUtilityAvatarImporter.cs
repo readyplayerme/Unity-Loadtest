@@ -34,6 +34,7 @@ namespace ReadyPlayerMe
                 GameObject avatar = null;
 #if UNITY_EDITOR || UNITY_WEBGL
                 avatar = Importer.LoadFromBytes(bytes, new ImportSettings());
+                avatar.SetActive(false);
                 await Task.Yield();
                 ProgressChanged?.Invoke(1);
                 return avatar;
@@ -42,6 +43,7 @@ namespace ReadyPlayerMe
                 Importer.ImportGLBAsync(bytes, new ImportSettings(), (model) =>
                 {
                     avatar = model;
+                    avatar.SetActive(false);
                     isImportDone = true;
                 }, OnProgressChanged);
 
@@ -69,6 +71,7 @@ namespace ReadyPlayerMe
                 GameObject avatar = null;
 #if UNITY_EDITOR || UNITY_WEBGL
                 avatar = Importer.LoadFromFile(path, new ImportSettings());
+                avatar.SetActive(false);
                 await Task.Yield();
                 ProgressChanged?.Invoke(1);
                 return avatar;
@@ -77,6 +80,7 @@ namespace ReadyPlayerMe
                 Importer.ImportGLBAsync(path, new ImportSettings(), (model) =>
                 {
                     avatar = model;
+                    avatar.SetActive(false);
                     isImportDone = true;
                 }, OnProgressChanged);
 

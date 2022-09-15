@@ -91,9 +91,11 @@ namespace ReadyPlayerMe
             }
             else
             {
+                var avatar = (GameObject) context.Data;
+                avatar.SetActive(true);
                 OnCompleted?.Invoke(this, new CompletionEventArgs
                 {
-                    Avatar = (GameObject) context.Data,
+                    Avatar = avatar,
                     Url = context.Url,
                     Metadata = context.Metadata
                 });

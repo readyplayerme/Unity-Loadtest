@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace  ReadyPlayerMe.Loadtest
+namespace ReadyPlayerMe.Loadtest.UI
 {
     public class AvatarLoaderUI : MonoBehaviour
     {
@@ -12,12 +12,7 @@ namespace  ReadyPlayerMe.Loadtest
         [SerializeField] private Button btnLoading;
         [SerializeField] private Slider sldAvatarCount;
         [SerializeField] private Text txtAvatarCount;
-
-        [SerializeField] private Text txtAvgLoadingTime;
-        [SerializeField] private Text txtTotalLoadingTime;
-        [SerializeField] private Text txtLastLoadingTime;
-        [SerializeField] private Text txtCountAvatars;
-
+        
         [SerializeField] private Text txtMeshLod;
         [SerializeField] private Text txtPose;
         [SerializeField] private Text txtTextureAtlas;
@@ -25,21 +20,22 @@ namespace  ReadyPlayerMe.Loadtest
         [SerializeField] private Text txtUseHands;
         [SerializeField] private Text txtMorphTargets;
         
+        [SerializeField] private GameObject pnlInfo;
+        [SerializeField] private Button btnOpenInfo;
+        
         [SerializeField] private AvatarLoadingHandler avatarLoadingHandler;
 
         private int numberOfAvatarsToLoad = 1;
-        private int numberOfAvatarsLoaded = 0;
         
         void Start()
         {
             InitUI();
-            
-            avatarLoadingHandler.AvatarLoaded += OnAvatarLoaded;
             avatarLoadingHandler.AllAvatarsLoaded += OnAllAvatarsLoaded;
         }
 
         private void InitUI()
         {
+            pnlInfo.SetActive(false);
             btnLoading.enabled = false;
             
             avatarConfigDropdown.onValueChanged.AddListener(delegate
@@ -54,8 +50,13 @@ namespace  ReadyPlayerMe.Loadtest
             
             FillAvatarConfigDropdown();
             btnLoading.onClick.AddListener(OnLoadingButtonClick);
+            btnOpenInfo.onClick.AddListener(OnOpenInfoClick);
         }
 
+        private void OnOpenInfoClick()
+        {
+            pnlInfo.SetActive(!pnlInfo.activeSelf);
+        }
 
         private void AvatarCountChanged(Slider slider)
         {
@@ -83,6 +84,12 @@ namespace  ReadyPlayerMe.Loadtest
                 btnLoading.enabled = false;
             }
         }
+        
+        private void OnAllAvatarsLoaded(object sender, AllAvatarsLoadedEventArgs args)
+        {
+            btnLoading.enabled = true;
+            btnLoading.GetComponentInChildren<Text>().text = "Load Avatars";
+        }
 
         private void FillAvatarConfigDropdown()
         {
@@ -95,38 +102,16 @@ namespace  ReadyPlayerMe.Loadtest
         private void OnLoadingButtonClick()
         {
             btnLoading.enabled = false;
+            btnLoading.GetComponentInChildren<Text>().text = "Loading ...";
             var selectedAvatarConfig = GetSelectedAvatarConfig();
 
             avatarLoadingHandler.LoadAvatars(numberOfAvatarsToLoad, selectedAvatarConfig);
-        }
-
-        private void OnAllAvatarsLoaded(object sender, AllAvatarsLoadedEventArgs args)
-        {
-            btnLoading.enabled = true;
-            txtTotalLoadingTime.text = args.SumLoadingTime.ToString();
-            Debug.Log("Finished loading");
-        }
-
-        private void OnAvatarLoaded(object sender, AvatarLoadedEventArgs args)
-        {
-            txtAvgLoadingTime.text = args.AverageLoadingTime + " s";
-            txtLastLoadingTime.text = args.LoadingTime + " s";
-            
-            numberOfAvatarsLoaded++;
-            txtCountAvatars.text = numberOfAvatarsLoaded.ToString();
         }
         
         private AvatarConfig GetSelectedAvatarConfig()
         {
             return avatarConfigs.Find((avatarConfig =>
                 avatarConfig.name == avatarConfigDropdown.options[avatarConfigDropdown.value].text));
-        }
-
-        private void OnDestroy()
-        {
-            if (avatarLoadingHandler == null) return;
-            avatarLoadingHandler.AvatarLoaded -= OnAvatarLoaded;
-            avatarLoadingHandler.AllAvatarsLoaded -= OnAllAvatarsLoaded;
         }
     }
 }

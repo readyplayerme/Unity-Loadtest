@@ -39,13 +39,7 @@ namespace ReadyPlayerMe
                 context.Data = Object.Instantiate(avatarAsset);
             }
 #endif
-            /*
-            var oldInstance = GameObject.Find(context.AvatarUri.Guid);
-            if (oldInstance)
-            {
-                Object.DestroyImmediate(oldInstance);
-            }
-*/
+
             ((Object) context.Data).name = context.AvatarUri.Guid;
 
             return context;

@@ -69,22 +69,23 @@ namespace ReadyPlayerMe.Loadtest
    
             OnAllAvatarsLoaded(new AllAvatarsLoadedEventArgs(CalcSumLoadingTime()));
         }
-
-        private string GetAvatarUrl(string avatarID)
-        {
-            return baseUrl + avatarID + ".glb";
-        }
-
+        
         private void OnLoadingCompleted(object sender, CompletionEventArgs args)
         {
             Destroy(placeholderAvatar);
             args.Avatar.transform.position = loadingPosition;
+            //args.Avatar.SetActive(true);
             
             avatarLoadingTimes.Add(loadingTime);
             
-            OnAvatarLoaded(new AvatarLoadedEventArgs(loadingTime, CalcAverageLoadingTime()));
+            OnAvatarLoaded(new AvatarLoadedEventArgs(loadingTime, CalcAverageLoadingTime(), CalcSumLoadingTime()));
                 
             loading = false;
+        }
+
+        private string GetAvatarUrl(string avatarID)
+        {
+            return baseUrl + avatarID + ".glb";
         }
 
         private void OnLoadingFailed(object sender, FailureEventArgs e)
@@ -123,12 +124,12 @@ namespace ReadyPlayerMe.Loadtest
             SumLoadingTime = sumLoadingTime;
         }
     }
-    public class AvatarLoadedEventArgs : EventArgs
+    public class AvatarLoadedEventArgs : AllAvatarsLoadedEventArgs
     {
         public float LoadingTime { get; }
         public float AverageLoadingTime { get; }
 
-        public AvatarLoadedEventArgs(float loadingTime, float averageLoadingTime)
+        public AvatarLoadedEventArgs(float loadingTime, float averageLoadingTime, float sumLoadingTime) : base(sumLoadingTime)
         {
             LoadingTime = loadingTime;
             AverageLoadingTime = averageLoadingTime;
