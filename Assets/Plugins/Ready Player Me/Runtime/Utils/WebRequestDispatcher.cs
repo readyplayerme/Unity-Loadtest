@@ -80,11 +80,14 @@ namespace ReadyPlayerMe
                     {
                         throw new CustomException(FailureType.DownloadError, request.error);
                     }
+                    
+                    
+                    var byteLength = (long) request.downloadedBytes;
 
                     return new Response(
                         request.downloadHandler.text,
                         request.downloadHandler.data,
-                        request.GetResponseHeader(LAST_MODIFIED));
+                        request.GetResponseHeader(LAST_MODIFIED), byteLength);
                 }
             }
 
@@ -136,7 +139,7 @@ namespace ReadyPlayerMe
                     return new Response(
                         string.Empty,
                         bytes,
-                        request.GetResponseHeader(LAST_MODIFIED));
+                        request.GetResponseHeader(LAST_MODIFIED), byteLength);
                 }
             }
 

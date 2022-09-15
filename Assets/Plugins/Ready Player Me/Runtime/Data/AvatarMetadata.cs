@@ -8,5 +8,6 @@ namespace ReadyPlayerMe
         public OutfitGender OutfitGender;
         public DateTime LastModified;
         public bool IsUpdated;
+        public long ByteSize;
     }
 }

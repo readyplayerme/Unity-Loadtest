@@ -9,6 +9,9 @@ namespace ReadyPlayerMe.Loadtest.UI
         [SerializeField] private Text txtTotalLoadingTime;
         [SerializeField] private Text txtLastLoadingTime;
         [SerializeField] private Text txtCountAvatars;
+        [SerializeField] private Text txtAvgSize;
+        [SerializeField] private Text txtLastSize;
+        [SerializeField] private Text txtTotalSize;
     
         [SerializeField] private AvatarLoadingHandler avatarLoadingHandler;
         
@@ -23,15 +26,19 @@ namespace ReadyPlayerMe.Loadtest.UI
         
         private void OnAllAvatarsLoaded(object sender, AllAvatarsLoadedEventArgs args)
         {
-            txtTotalLoadingTime.text = args.SumLoadingTime.ToString();
+            txtTotalLoadingTime.text = args.SumLoadingTime.ToString("0.00") + "s";
         }
 
         private void OnAvatarLoaded(object sender, AvatarLoadedEventArgs args)
         {
-            txtAvgLoadingTime.text = args.AverageLoadingTime + " s";
-            txtLastLoadingTime.text = args.LoadingTime + " s";
-            txtTotalLoadingTime.text = args.SumLoadingTime + "s";
-            
+            txtAvgLoadingTime.text = args.AverageLoadingTime.ToString("0.00") + "s";
+            txtLastLoadingTime.text = args.LoadingTime.ToString("0.00") + "s";
+            txtTotalLoadingTime.text = args.SumLoadingTime.ToString("0.00") + "s";
+
+            txtLastSize.text = (args.DownloadSize / 1000).ToString("0.00") + "MB";
+            txtTotalSize.text = (args.SumDownloadSize / 1000).ToString("0.00") + "MB";
+            txtAvgSize.text = (args.AverageDownloadSize / 1000).ToString("0.00") + "MB";
+
             numberOfAvatarsLoaded++;
             txtCountAvatars.text = numberOfAvatarsLoaded.ToString();
         }
