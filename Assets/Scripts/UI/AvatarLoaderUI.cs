@@ -20,8 +20,6 @@ namespace ReadyPlayerMe.Loadtest.UI
         [SerializeField] private Text txtUseHands;
         [SerializeField] private Text txtMorphTargets;
         
-        [SerializeField] private GameObject pnlInfo;
-        [SerializeField] private Button btnOpenInfo;
         
         [SerializeField] private AvatarLoadingHandler avatarLoadingHandler;
 
@@ -35,27 +33,14 @@ namespace ReadyPlayerMe.Loadtest.UI
 
         private void InitUI()
         {
-            pnlInfo.SetActive(false);
             btnLoading.enabled = false;
-            
-            avatarConfigDropdown.onValueChanged.AddListener(delegate
-            {
-                AvatarConfigSelected(avatarConfigDropdown);
-            });
-            
-            sldAvatarCount.onValueChanged.AddListener(delegate
-            {
-                AvatarCountChanged(sldAvatarCount);
-            });
-            
+
+            avatarConfigDropdown.onValueChanged.AddListener(delegate { AvatarConfigSelected(avatarConfigDropdown); });
+
+            sldAvatarCount.onValueChanged.AddListener(delegate { AvatarCountChanged(sldAvatarCount); });
+
             FillAvatarConfigDropdown();
             btnLoading.onClick.AddListener(OnLoadingButtonClick);
-            btnOpenInfo.onClick.AddListener(OnOpenInfoClick);
-        }
-
-        private void OnOpenInfoClick()
-        {
-            pnlInfo.SetActive(!pnlInfo.activeSelf);
         }
 
         private void AvatarCountChanged(Slider slider)

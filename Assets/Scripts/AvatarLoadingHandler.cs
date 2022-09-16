@@ -12,8 +12,7 @@ namespace ReadyPlayerMe.Loadtest
         [SerializeField] private string baseUrl = "https://api.readyplayer.me/v1/avatars/";
         [SerializeField] private GameObject loadingPlaceholder;
 
-        private readonly List<float> avatarLoadingTimes = new List<float>();
-        private readonly List<float> avatarFileSizes = new List<float>();
+        private readonly List<Avatar> avatars = new List<Avatar>();
         private float loadingTime = 0;
         private Vector3 loadingPosition;
         private bool loading = false;
@@ -55,10 +54,8 @@ namespace ReadyPlayerMe.Loadtest
                 
                 avatarLoader = new AvatarLoader();
                 avatarLoader.AvatarConfig = avatarConfig;
-                
-                loadingPosition = Quaternion.Euler(90, 0, 0) * Random.insideUnitCircle * 15; //random position in a circle with r=15
-                placeholderAvatar = Instantiate(loadingPlaceholder);
-                placeholderAvatar.transform.position = loadingPosition;
+
+                loadingPosition = InstantiateLoadingPlaceholder();
                 
                 avatarLoader.OnCompleted += OnLoadingCompleted;
                 avatarLoader.OnFailed += OnLoadingFailed;
@@ -70,22 +67,28 @@ namespace ReadyPlayerMe.Loadtest
    
             OnAllAvatarsLoaded(new AllAvatarsLoadedEventArgs(CalcSumLoadingTime(), CalcSumDownloadSize()));
         }
-        
+
+        private Vector3 InstantiateLoadingPlaceholder()
+        {
+            var pos = Quaternion.Euler(90, 0, 0) * Random.insideUnitCircle * 15; //random position in a circle with r=15
+            placeholderAvatar = Instantiate(loadingPlaceholder);
+            return placeholderAvatar.transform.position = pos;
+        }
+
         private void OnLoadingCompleted(object sender, CompletionEventArgs args)
         {
-            Destroy(placeholderAvatar);
+            DestroyImmediate(placeholderAvatar);
+            args.Avatar.transform.SetParent(gameObject.transform);
             args.Avatar.transform.position = loadingPosition;
-            //args.Avatar.SetActive(true);
             
-            avatarLoadingTimes.Add(loadingTime);
-
-            var downloadedKiloByte = args.Metadata.ByteSize / 1000;
-            avatarFileSizes.Add(downloadedKiloByte); // Kilobyte
+            var avatar = args.Avatar.AddComponent<Avatar>();
+            avatar.AvatarDownloaded(args.Metadata, loadingTime);
+            avatars.Add(avatar);
             
-            OnAvatarLoaded(new AvatarLoadedEventArgs(loadingTime, 
+            OnAvatarLoaded(new AvatarLoadedEventArgs(
+                avatar,
                 CalcAverageLoadingTime(), 
-                CalcSumLoadingTime(), 
-                downloadedKiloByte, 
+                CalcSumLoadingTime(),
                 CalcAverageDownloadSize(), 
                 CalcSumDownloadSize()));
                 
@@ -106,7 +109,7 @@ namespace ReadyPlayerMe.Loadtest
         private float CalcAverageLoadingTime()
         {
             var sumLoadingTime = CalcSumLoadingTime();
-            var avgLoadingTime = sumLoadingTime / avatarLoadingTimes.Count;
+            var avgLoadingTime = sumLoadingTime / avatars.Count;
 
             return avgLoadingTime;
         }
@@ -114,53 +117,26 @@ namespace ReadyPlayerMe.Loadtest
         private float CalcSumLoadingTime()
         {
             float sumLoadingTime = 0;
-            avatarLoadingTimes.ForEach((time) => sumLoadingTime = sumLoadingTime + time);
+            avatars.ForEach((avatar) => sumLoadingTime += avatar.LoadingTime);
             return sumLoadingTime;
         }
         
         private float CalcAverageDownloadSize()
         {
             var sumDownloadSize = CalcSumDownloadSize();
-            return sumDownloadSize / avatarFileSizes.Count;
+            return sumDownloadSize / avatars.Count;
         }
         
         private float CalcSumDownloadSize()
         {
             float sumDownloadSize = 0;
-            avatarFileSizes.ForEach((size) => sumDownloadSize = sumDownloadSize + size);
+            avatars.ForEach((avatar) => sumDownloadSize += avatar.Metadata.ByteSize);
             return sumDownloadSize;
         }
 
         private void OnDestroy()
         {
-            avatarLoader?.Cancel();
-        }
-    }
-    
-    public class AllAvatarsLoadedEventArgs : EventArgs
-    {
-        public float SumLoadingTime { get; }
-        public float SumDownloadSize { get; }
-
-        public AllAvatarsLoadedEventArgs(float sumLoadingTime, float sumDownloadSize)
-        {
-            SumLoadingTime = sumLoadingTime;
-            SumDownloadSize = sumDownloadSize;
-        }
-    }
-    public class AvatarLoadedEventArgs : AllAvatarsLoadedEventArgs
-    {
-        public float LoadingTime { get; }
-        public float AverageLoadingTime { get; }
-        public float DownloadSize{ get; }
-        public float AverageDownloadSize { get; }
-
-        public AvatarLoadedEventArgs(float loadingTime, float averageLoadingTime, float sumLoadingTime, float downloadSize, float averageDownloadSize, float sumDownloadSize) : base(sumLoadingTime, sumDownloadSize)
-        {
-            LoadingTime = loadingTime;
-            AverageLoadingTime = averageLoadingTime;
-            AverageDownloadSize = averageDownloadSize;
-            DownloadSize = downloadSize;
+            avatarLoader.Cancel();
         }
     }
 }

@@ -32,12 +32,12 @@ namespace ReadyPlayerMe.Loadtest.UI
         private void OnAvatarLoaded(object sender, AvatarLoadedEventArgs args)
         {
             txtAvgLoadingTime.text = args.AverageLoadingTime.ToString("0.00") + "s";
-            txtLastLoadingTime.text = args.LoadingTime.ToString("0.00") + "s";
+            txtLastLoadingTime.text = args.Avatar.LoadingTime.ToString("0.00") + "s";
             txtTotalLoadingTime.text = args.SumLoadingTime.ToString("0.00") + "s";
 
-            txtLastSize.text = (args.DownloadSize / 1000).ToString("0.00") + "MB";
-            txtTotalSize.text = (args.SumDownloadSize / 1000).ToString("0.00") + "MB";
-            txtAvgSize.text = (args.AverageDownloadSize / 1000).ToString("0.00") + "MB";
+            txtLastSize.text = (args.Avatar.Metadata.ByteSize / 1000000).ToString("0.00") + "MB";
+            txtTotalSize.text = (args.SumDownloadSize / 1000000).ToString("0.00") + "MB";
+            txtAvgSize.text = (args.AverageDownloadSize / 1000000).ToString("0.00") + "MB";
 
             numberOfAvatarsLoaded++;
             txtCountAvatars.text = numberOfAvatarsLoaded.ToString();
