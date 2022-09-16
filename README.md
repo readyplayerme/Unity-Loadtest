@@ -16,6 +16,6 @@ This can also be embedded in your game or app, to see the performance of multipl
 4. When you are ready, you can hit the "Load Avatars" button.
 5. Avatar loading starts. You can see a white avatar silhuette in the scene. This marks the next avatar spawning, once it's loaded.
 
-### State
+### Stats
 
 1. On the right side bar you can find the stats window which should be pretty self explanatory.
