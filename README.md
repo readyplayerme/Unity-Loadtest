@@ -18,7 +18,7 @@ This can also be embedded in your game or app, to see the performance of multipl
 
 ### Stats
 
-1. On the right side bar you can find the stats window which should be pretty self explanatory.
+On the right side bar you can find the stats window which should be pretty self explanatory.
 
 ### Control the camera
 
