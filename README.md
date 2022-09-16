@@ -19,3 +19,12 @@ This can also be embedded in your game or app, to see the performance of multipl
 ### Stats
 
 1. On the right side bar you can find the stats window which should be pretty self explanatory.
+
+### Control the camera
+
+To check the quality or render-stats of single avatars, you can take control over the camera. Hit the "Space" key on the keyboard and then control the camera with the keys "W", "A", "S", "D" to move forward, backward and to the sides and use the mouse to look around. Hit "Space" again to exit the camera-control-mode.
+
+### Turn on/off the light
+
+To check the influence of the lighting on the performance, you can turn off the directional light. You can do so by hitting the light bulb icon in the bottom right corner.
+
