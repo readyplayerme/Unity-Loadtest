@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ReadyPlayerMe.Loadtest {
     public class FlyCamera : MonoBehaviour
     {
-        [SerializeField] public float speed = 0.1f;
+        [SerializeField] public float speed = 5f;
         [SerializeField] public float mouseSpeed = 2f;
         
         public event EventHandler Enabled;
@@ -25,9 +25,10 @@ namespace ReadyPlayerMe.Loadtest {
                 angles.x -= Input.GetAxis("Mouse Y") * mouseSpeed;
                 angles.y += Input.GetAxis("Mouse X") * mouseSpeed;
                 transform.eulerAngles = angles;
-                transform.position +=
-                    Input.GetAxis("Horizontal") * speed * transform.right +
-                    Input.GetAxis("Vertical") * speed * transform.forward;
+
+                var newPos = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                
+                transform.Translate(newPos * speed * Time.deltaTime);
             }
         }
         
