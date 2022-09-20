@@ -1,6 +1,6 @@
 # Ready Player Me Avatars Loadtest
 
-This sample project shows the performance of different speced Ready Player Me avatars in a Web-GL environment. It is possible to spawn up to 200 different avatars into the same scene to see how it affects the performance of the scene. 
+This sample project shows the performance of different spec'd Ready Player Me avatars in a Web-GL environment. It is possible to spawn up to 200 different avatars into the same scene to see how it affects the performance of the scene. 
 
 This can also be embedded in your game or app, to see the performance of multiple avatars your game-scene.
 
