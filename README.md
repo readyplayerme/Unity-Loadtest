@@ -28,3 +28,6 @@ To check the quality or render-stats of single avatars, you can take control ove
 
 To check the influence of the lighting on the performance, you can turn off the directional light. You can do so by hitting the light bulb icon in the bottom right corner.
 
+
+
+test
