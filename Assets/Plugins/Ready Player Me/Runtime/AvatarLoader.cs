@@ -92,6 +92,7 @@ namespace ReadyPlayerMe
             else
             {
                 var avatar = (GameObject) context.Data;
+                context.Metadata.ByteSize = context.Bytes.Length;
                 avatar.SetActive(true);
                 OnCompleted?.Invoke(this, new CompletionEventArgs
                 {
