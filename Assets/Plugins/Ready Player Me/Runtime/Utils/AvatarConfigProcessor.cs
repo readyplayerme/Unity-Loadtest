@@ -23,18 +23,13 @@ namespace ReadyPlayerMe
             return (textureSize % 2 == 0) ? textureSize : textureSize + 1;
         }
 
-        private static string ProcessMorphTargets(List<MorphTarget> targets)
+        private static string ProcessMorphTargets(List<string> targets)
         {
             if (targets.Count == 0)
             {
                 return string.Empty;
             }
-            List<string> morphs = new List<string>();
-            foreach (var target in targets)
-            {
-                morphs.Add(AvatarConfigMap.MorphTargets[target]);
-            }
-            return $"&morphTargets={string.Join(",", morphs)}";
+            return $"&morphTargets={string.Join(",", targets)}";
         }
     }
 }

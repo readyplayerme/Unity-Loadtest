@@ -33,10 +33,7 @@ namespace ReadyPlayerMe
                         ProgressChanged?.Invoke(request.downloadProgress);
                     }
 
-                    if (token.IsCancellationRequested)
-                    {
-                        return default;
-                    }
+                    token.ThrowCustomExceptionIfCancellationRequested();
 
                     if (request.isHttpError || request.isNetworkError)
                     {
@@ -71,23 +68,17 @@ namespace ReadyPlayerMe
                         ProgressChanged?.Invoke(request.downloadProgress);
                     }
 
-                    if (token.IsCancellationRequested)
-                    {
-                        return default;
-                    }
+                    token.ThrowCustomExceptionIfCancellationRequested();
 
                     if (request.downloadedBytes == 0 || request.isHttpError || request.isNetworkError)
                     {
                         throw new CustomException(FailureType.DownloadError, request.error);
                     }
-                    
-                    
-                    var byteLength = (long) request.downloadedBytes;
 
                     return new Response(
                         request.downloadHandler.text,
                         request.downloadHandler.data,
-                        request.GetResponseHeader(LAST_MODIFIED), byteLength);
+                        request.GetResponseHeader(LAST_MODIFIED));
                 }
             }
 
@@ -114,10 +105,7 @@ namespace ReadyPlayerMe
                         ProgressChanged?.Invoke(request.downloadProgress);
                     }
 
-                    if (token.IsCancellationRequested)
-                    {
-                        return default;
-                    }
+                    token.ThrowCustomExceptionIfCancellationRequested();
 
                     if (request.downloadedBytes == 0 || request.isHttpError || request.isNetworkError)
                     {
@@ -139,7 +127,7 @@ namespace ReadyPlayerMe
                     return new Response(
                         string.Empty,
                         bytes,
-                        request.GetResponseHeader(LAST_MODIFIED), byteLength);
+                        request.GetResponseHeader(LAST_MODIFIED));
                 }
             }
 
@@ -159,11 +147,7 @@ namespace ReadyPlayerMe
                         ProgressChanged?.Invoke(request.downloadProgress);
                     }
 
-                    if (token.IsCancellationRequested)
-                    {
-                        return default;
-                    }
-
+                    token.ThrowCustomExceptionIfCancellationRequested();
 
                     if (request.isNetworkError || request.isHttpError)
                     {

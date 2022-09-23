@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3663d6a9358ae4149aad3496e56d4601, type: 3}
-  m_Name: Low
+  m_Name: Avatar Configuration Low
   m_EditorClassIdentifier: 
   MeshLod: 2
   Pose: 0
   TextureAtlas: 3
   TextureSizeLimit: 256
   UseHands: 0
-  MorphTargets: 00000000
+  MorphTargets:
+  - none

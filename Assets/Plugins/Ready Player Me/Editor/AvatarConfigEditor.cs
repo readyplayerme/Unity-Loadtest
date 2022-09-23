@@ -27,24 +27,25 @@ namespace ReadyPlayerMe
             DrawAddMorphTargetButton();
         }
 
-        private void DrawMorphTarget(int index)
+        private void DrawMorphTarget(int targetIndex)
         {
             GUILayout.BeginHorizontal();
             {
                 EditorGUI.BeginChangeCheck();
-                MorphTarget morph = (MorphTarget) EditorGUILayout.EnumPopup(avatarConfigTarget.MorphTargets[index]);
+                int index = AvatarMorphTarget.MorphTargetAvatarAPI.IndexOf(avatarConfigTarget.MorphTargets[targetIndex]);
+                int selected = EditorGUILayout.Popup(index, AvatarMorphTarget.MorphTargetAvatarAPI.ToArray());
 
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(avatarConfigTarget, "Modify Morph Target");
-                    avatarConfigTarget.MorphTargets[index] = morph;
+                    avatarConfigTarget.MorphTargets[targetIndex] = AvatarMorphTarget.MorphTargetAvatarAPI[selected];
                     EditorUtility.SetDirty(avatarConfigTarget);
                 }
 
                 if (GUILayout.Button("Remove", GUILayout.Width(100)))
                 {
                     Undo.RecordObject(avatarConfigTarget, "Delete Morph Target");
-                    avatarConfigTarget.MorphTargets.RemoveAt(index);
+                    avatarConfigTarget.MorphTargets.RemoveAt(targetIndex);
                     EditorUtility.SetDirty(avatarConfigTarget);
                 }
             }
@@ -57,7 +58,7 @@ namespace ReadyPlayerMe
             if (GUILayout.Button("Add", GUILayout.Height(30)))
             {
                 Undo.RecordObject(avatarConfigTarget, "Add Morph Target");
-                avatarConfigTarget.MorphTargets.Add(MorphTarget.None);
+                avatarConfigTarget.MorphTargets.Add(AvatarMorphTarget.MorphTargetAvatarAPI[0]);
                 EditorUtility.SetDirty(avatarConfigTarget);
             }
         }

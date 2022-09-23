@@ -61,7 +61,7 @@ namespace ReadyPlayerMe.Analytics
                 { Constants.AmplitudeKeys.PLATFORM, appData.UnityPlatform },
                 { Constants.AmplitudeKeys.SESSION_ID, sessionId },
                 { Constants.AmplitudeKeys.APP_VERSION, appData.SDKVersion },
-                { Constants.AmplitudeKeys.OPERATING_SYSTEM, SystemInfo.operatingSystem  }
+                { Constants.AmplitudeKeys.OPERATING_SYSTEM, SystemInfo.operatingSystem }
             };
 
             if (userProperties != null)

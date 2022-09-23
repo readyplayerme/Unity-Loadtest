@@ -94,10 +94,7 @@ namespace ReadyPlayerMe
                     ProgressChanged?.Invoke(request.downloadProgress);
                 }
 
-                if (token.IsCancellationRequested)
-                {
-                    return default;
-                }
+                token.ThrowCustomExceptionIfCancellationRequested();
 
                 if (request.isHttpError || request.isNetworkError)
                 {
