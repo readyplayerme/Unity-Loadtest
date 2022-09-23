@@ -52,7 +52,9 @@ namespace ReadyPlayerMe
                     await Task.Yield();
                 }
 
-                return token.IsCancellationRequested ? default : avatar;
+                token.ThrowCustomExceptionIfCancellationRequested();
+
+                return avatar;
 #endif
             }
             catch (Exception exception)
@@ -89,7 +91,9 @@ namespace ReadyPlayerMe
                     await Task.Yield();
                 }
 
-                return token.IsCancellationRequested ? default : avatar;
+                token.ThrowCustomExceptionIfCancellationRequested();
+
+                return avatar;
 #endif
             }
             catch (Exception exception)

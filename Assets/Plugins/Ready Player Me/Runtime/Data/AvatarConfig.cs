@@ -14,6 +14,6 @@ namespace ReadyPlayerMe
         public int TextureSizeLimit = 1024;
         public bool UseHands;
         [HideInInspector]
-        public List<MorphTarget> MorphTargets = new List<MorphTarget>();
+        public List<string> MorphTargets = new List<string>();
     }
 }

@@ -38,6 +38,11 @@ namespace ReadyPlayerMe
                 }
                 catch (CustomException exception)
                 {
+                    if (ctxSource.IsCancellationRequested)
+                    {
+                        ctxSource.Dispose();
+                    }
+
                     throw new CustomException(exception.FailureType, exception.Message);
                 }
                 operation.ProgressChanged -= OnProgressChanged;
@@ -48,8 +53,10 @@ namespace ReadyPlayerMe
 
         public void Cancel()
         {
-            ctxSource?.Cancel();
-            ctxSource?.Dispose();
+            if (!ctxSource.IsCancellationRequested)
+            {
+                ctxSource?.Cancel();
+            }
         }
 
         private void OnProgressChanged(float progress)

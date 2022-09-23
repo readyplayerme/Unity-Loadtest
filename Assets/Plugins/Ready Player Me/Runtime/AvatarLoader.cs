@@ -92,14 +92,12 @@ namespace ReadyPlayerMe
             else
             {
                 var avatar = (GameObject) context.Data;
-                context.Metadata.ByteSize = context.Bytes.Length;
                 avatar.SetActive(true);
-                
                 OnCompleted?.Invoke(this, new CompletionEventArgs
                 {
                     Avatar = avatar,
                     Url = context.Url,
-                    Metadata = context.Metadata,
+                    Metadata = context.Metadata
                 });
 
                 SDKLogger.Log(TAG, $"Avatar loaded in {Time.timeSinceLevelLoad - startTime:F2} seconds.");

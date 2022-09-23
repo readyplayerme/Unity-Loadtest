@@ -16,10 +16,10 @@ namespace ReadyPlayerMe
 
         public Task<AvatarContext> Execute(AvatarContext context, CancellationToken token)
         {
-            if (context.Data is GameObject avatar)
+            if (context.Data is GameObject)
             {
                 context = ProcessAvatarGameObject(context);
-                ProcessAvatar(avatar, context.Metadata);
+                ProcessAvatar(context.Data as GameObject, context.Metadata);
                 ProgressChanged?.Invoke(1);
                 return Task.FromResult(context);
             }

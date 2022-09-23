@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3663d6a9358ae4149aad3496e56d4601, type: 3}
-  m_Name: Medium
+  m_Name: Avatar Configuration Medium
   m_EditorClassIdentifier: 
   MeshLod: 1
   Pose: 0
   TextureAtlas: 2
   TextureSizeLimit: 512
   UseHands: 0
-  MorphTargets: 01000000
+  MorphTargets:
+  - Oculus Visemes
