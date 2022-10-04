@@ -32,13 +32,6 @@ namespace ReadyPlayerMe
             {
                 // ReSharper disable once RedundantAssignment
                 GameObject avatar = null;
-#if UNITY_EDITOR || UNITY_WEBGL
-                avatar = Importer.LoadFromBytes(bytes, new ImportSettings());
-                avatar.SetActive(false);
-                await Task.Yield();
-                ProgressChanged?.Invoke(1);
-                return avatar;
-#else
                 var isImportDone = false;
                 Importer.ImportGLBAsync(bytes, new ImportSettings(), (model) =>
                 {
@@ -53,9 +46,8 @@ namespace ReadyPlayerMe
                 }
 
                 token.ThrowCustomExceptionIfCancellationRequested();
-
+                avatar.SetActive(false);
                 return avatar;
-#endif
             }
             catch (Exception exception)
             {
