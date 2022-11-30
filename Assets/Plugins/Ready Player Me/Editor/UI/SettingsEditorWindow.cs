@@ -16,9 +16,11 @@ namespace ReadyPlayerMe
         private const string ANALYTICS_LOGGING_DESCRIPTION =
             "We are constantly adding new features and improvements to our SDK. Enable analytics and help us in building even better free tools for more developers. This data is used for internal purposes only and is not shared with third parties.";
         private const string ANALYTICS_PRIVACY_TOOLTIP = "Click to read our Privacy Policy.";
-        private const string AVATAR_CONFIG_TOOLTIP = "Assign an avatar configuration to include Avatar API request parameters";
+        private const string AVATAR_CONFIG_TOOLTIP = "Assign an avatar configuration to include Avatar API request parameters.";
         private const string ANALYTICS_PRIVACY_URL =
             "https://docs.readyplayer.me/ready-player-me/integration-guides/unity/help-us-improve-the-unity-sdk";
+        private const string CACHING_TOOLTIP =
+            "Enable caching to improve avatar loading performance at runtime.";
         private const string EDITOR_WINDOW_NAME = "rpm settings";
 
 #if UNITY_EDITOR_LINUX
@@ -52,6 +54,10 @@ namespace ReadyPlayerMe
 
         private AvatarConfig avatarConfig;
 
+        private bool subdomainFocused;
+        private string subdomainAfterFocus = string.Empty;
+        private const string SUBDOMAIN_FIELD_CONTROL_NAME = "subdomain";
+
         public static void ShowWindowMenu()
         {
             var window = (SettingsEditorWindow) GetWindow(typeof(SettingsEditorWindow));
@@ -71,7 +77,7 @@ namespace ReadyPlayerMe
             analyticsEnabled = AnalyticsEditorLogger.IsEnabled;
             avatarLoaderSettings = Resources.Load<AvatarLoaderSettings>(AvatarLoaderSettings.RESOURCE_PATH);
             avatarCachingEnabled = avatarLoaderSettings != null && avatarLoaderSettings.AvatarCachingEnabled;
-            isCacheEmpty = DirectoryUtility.IsCacheEmpty();
+            isCacheEmpty = AvatarCache.IsCacheEmpty();
             avatarConfig = avatarLoaderSettings != null ? avatarLoaderSettings.AvatarConfig : null;
 
             initialized = true;
@@ -79,7 +85,7 @@ namespace ReadyPlayerMe
 
         private void OnFocus()
         {
-            isCacheEmpty = DirectoryUtility.IsCacheEmpty();
+            isCacheEmpty = AvatarCache.IsCacheEmpty();
         }
 
         private void OnGUI()
@@ -168,10 +174,12 @@ namespace ReadyPlayerMe
                 Horizontal(() =>
                 {
                     GUILayout.Space(2);
-                    EditorGUILayout.LabelField("Your subdomain:          https:// ", textLabelStyle, GUILayout.Width(176));
 
+                    EditorGUILayout.LabelField("Your subdomain:          https:// ", textLabelStyle, GUILayout.Width(176));
                     var oldValue = partnerSubdomain;
+                    GUI.SetNextControlName(SUBDOMAIN_FIELD_CONTROL_NAME);
                     partnerSubdomain = EditorGUILayout.TextField(oldValue, textFieldStyle, GUILayout.Width(128), GUILayout.Height(20));
+
                     EditorGUILayout.LabelField(".readyplayer.me", textLabelStyle, GUILayout.Width(116), GUILayout.Height(20));
                     GUIContent button = new GUIContent((Texture) AssetDatabase.LoadAssetAtPath("Assets/Plugins/Ready Player Me/Editor/error.png", typeof(Texture)), DOMAIN_VALIDATION_ERROR);
 
@@ -187,11 +195,10 @@ namespace ReadyPlayerMe
                         EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
                     }
 
-                    if (oldValue != partnerSubdomain)
+                    if (IsSubdomainFocusLost())
                     {
                         SaveSubdomain();
                     }
-
                 });
             }, true);
         }
@@ -220,13 +227,13 @@ namespace ReadyPlayerMe
         {
             Vertical(() =>
             {
-                GUILayout.Label("Avatar Caching (experimental)", HeadingStyle);
+                GUILayout.Label("Avatar Caching", HeadingStyle);
 
                 Horizontal(() =>
                 {
                     GUILayout.Space(2);
                     var cachingEnabled = avatarCachingEnabled;
-                    avatarCachingEnabled = EditorGUILayout.ToggleLeft(new GUIContent("Avatar caching enabled", ANALYTICS_LOGGING_DESCRIPTION), avatarCachingEnabled);
+                    avatarCachingEnabled = EditorGUILayout.ToggleLeft(new GUIContent("Avatar caching enabled", CACHING_TOOLTIP), avatarCachingEnabled);
 
                     if (cachingEnabled != avatarCachingEnabled && avatarLoaderSettings != null)
                     {
@@ -243,7 +250,7 @@ namespace ReadyPlayerMe
                     if (GUILayout.Button("Clear local avatar cache", avatarCachingButtonStyle))
                     {
                         TryClearCache();
-                        isCacheEmpty = DirectoryUtility.IsCacheEmpty();
+                        isCacheEmpty = AvatarCache.IsCacheEmpty();
                     }
                     GUI.enabled = true;
 
@@ -296,8 +303,32 @@ namespace ReadyPlayerMe
             EditorPrefs.SetString(WEB_VIEW_PARTNER_SAVE_KEY, partnerSubdomain);
 
             var subDomain = SubdomainHelper.PartnerDomain;
-            AnalyticsEditorLogger.EventLogger.LogUpdatePartnerURL(subDomain, partnerSubdomain);
+            if (subDomain != partnerSubdomain)
+            {
+                AnalyticsEditorLogger.EventLogger.LogUpdatePartnerURL(subDomain, partnerSubdomain);
+            }
             SubdomainHelper.SaveToScriptableObject(partnerSubdomain);
+        }
+
+        private bool IsSubdomainFocusLost()
+        {
+            // focus changed from subdomain to another item
+            if (GUI.GetNameOfFocusedControl() == string.Empty && subdomainFocused)
+            {
+                subdomainFocused = false;
+
+                if (subdomainAfterFocus != partnerSubdomain)
+                {
+                    return true;
+                }
+            }
+            if (GUI.GetNameOfFocusedControl() == SUBDOMAIN_FIELD_CONTROL_NAME && !subdomainFocused)
+            {
+                subdomainFocused = true;
+                subdomainAfterFocus = partnerSubdomain;
+            }
+
+            return false;
         }
 
         private bool ValidateSubdomain()
@@ -307,16 +338,16 @@ namespace ReadyPlayerMe
 
         private static void TryClearCache()
         {
-            if (DirectoryUtility.IsCacheEmpty())
+            if (AvatarCache.IsCacheEmpty())
             {
                 EditorUtility.DisplayDialog("Clear Cache", $"Cache is already empty", "Ok");
                 return;
             }
-            var size = (DirectoryUtility.GetCacheSize() / (1024f * 1024)).ToString("F2");
-            var avatarCount = DirectoryUtility.GetAvatarCount();
+            var size = (AvatarCache.GetCacheSize() / (1024f * 1024)).ToString("F2");
+            var avatarCount = AvatarCache.GetAvatarCount();
             if (EditorUtility.DisplayDialog("Clear Cache", $"Do you want to clear all the Avatars cache from persistent data path, {size} MB and {avatarCount} avatars?", "Ok", "Cancel"))
             {
-                DirectoryUtility.ClearAvatarsCache();
+                AvatarCache.Clear();
             }
         }
 

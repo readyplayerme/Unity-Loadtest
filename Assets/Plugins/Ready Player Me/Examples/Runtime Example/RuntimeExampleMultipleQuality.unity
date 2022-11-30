@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641186, b: 0.5748162, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465791, g: 0.49641317, b: 0.57481784, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -397,7 +397,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 167663914}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 1, z: 5}
+  m_LocalPosition: {x: 0, y: 1, z: 6.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1754,7 +1754,7 @@ GameObject:
   - component: {fileID: 2024074594}
   - component: {fileID: 2024074593}
   m_Layer: 0
-  m_Name: Runtime Example
+  m_Name: Runtime Example Multiple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1784,11 +1784,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2024074591}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ec678a30bb724ed9999a22a9e41d8af, type: 3}
+  m_Script: {fileID: 11500000, guid: 224f12c77efd85442b0ee207215e2259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   avatarUrl: https://api.readyplayer.me/v1/avatars/632d65e99b4c6a4352a9b8db.glb
-  avatarConfig: {fileID: 11400000, guid: 0721fb2c84320491182b4a7bdbd9d2d9, type: 2}
+  qualityContainerPrefab: {fileID: 1853687888834283808, guid: 7e49cdc951d802d4d9bfdf45578ca7f8,
+    type: 3}
+  avatarConfigs:
+  - Config: {fileID: 11400000, guid: 0721fb2c84320491182b4a7bdbd9d2d9, type: 2}
+    PosX: 0.65
+  - Config: {fileID: 11400000, guid: 784b4c053ccfc4380ae9eb3ba1c08d15, type: 2}
+    PosX: 0
+  - Config: {fileID: 11400000, guid: 573f650e253d44188ba081dddd37ead4, type: 2}
+    PosX: -0.65
 --- !u!114 &2024074594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1911,7 +1919,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -30}
+  m_AnchoredPosition: {x: 71.3, y: -403.3}
   m_SizeDelta: {x: 120, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2081332843

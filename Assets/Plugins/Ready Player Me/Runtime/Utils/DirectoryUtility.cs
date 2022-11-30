@@ -18,44 +18,14 @@ namespace ReadyPlayerMe
             }
         }
 
-        public static string GetAvatarSaveDirectory(string guid, bool saveInProjectFolder = false) => $"{GetAvatarsDirectoryPath(saveInProjectFolder)}/{guid}";
+        public static string GetAvatarSaveDirectory(string guid, bool saveInProjectFolder = false, string paramsHash = null)
+        {
+            return saveInProjectFolder ? $"{GetAvatarsDirectoryPath(true)}/{guid}" : $"{GetAvatarsDirectoryPath()}/{guid}/{paramsHash}";
+        }
 
         public static string GetRelativeProjectPath(string guid) => $"Assets/{DefaultAvatarFolder}/{guid}";
 
-        /// Is there any avatars present in the persistent cache.
-        public static bool IsCacheEmpty()
-        {
-            var path = GetAvatarsDirectoryPath();
-            return !Directory.Exists(path) ||
-                   (Directory.GetFiles(path).Length == 0 && Directory.GetDirectories(path).Length == 0);
-        }
-
-        /// Clears the avatars from the persistent cache.
-        public static void ClearAvatarsCache()
-        {
-            var path = GetAvatarsDirectoryPath();
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path, true);
-            }
-        }
-
-        /// Total Avatars stored in persistent cache.
-        public static int GetAvatarCount()
-        {
-            var path = GetAvatarsDirectoryPath();
-            return !Directory.Exists(path) ? 0 : new DirectoryInfo(path).GetDirectories().Length;
-
-        }
-
-        /// Total size of avatar stored in persistent cache. Returns total bytes.
-        public static long GetCacheSize()
-        {
-            var path = GetAvatarsDirectoryPath();
-            return !Directory.Exists(path) ? 0 : GetDirectorySize(new DirectoryInfo(path));
-        }
-
-        private static long GetDirectorySize(DirectoryInfo directoryInfo)
+        public static long GetDirectorySize(DirectoryInfo directoryInfo)
         {
             // Add file sizes.
             var fileInfos = directoryInfo.GetFiles();
@@ -72,7 +42,5 @@ namespace ReadyPlayerMe
             var directory = saveInProjectFolder ? Application.dataPath : Application.persistentDataPath;
             return $"{directory}/{DefaultAvatarFolder}";
         }
-
-
     }
 }

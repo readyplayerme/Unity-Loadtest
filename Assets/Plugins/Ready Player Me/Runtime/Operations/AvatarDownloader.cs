@@ -26,11 +26,16 @@ namespace ReadyPlayerMe
                 throw new InvalidDataException($"Expected cast {typeof(string)} instead got ");
             }
 
-            if (!context.Metadata.IsUpdated)
+            if (!context.Metadata.IsUpdated && File.Exists(context.AvatarUri.LocalModelPath))
             {
                 SDKLogger.Log(TAG, "Loading model from cache.");
                 context.Bytes = File.ReadAllBytes(context.AvatarUri.LocalModelPath);
                 return context;
+            }
+
+            if (context.Metadata.IsUpdated)
+            {
+                AvatarCache.ClearAvatar(context.AvatarUri.Guid, context.SaveInProjectFolder);
             }
 
             if (downloadInMemory)

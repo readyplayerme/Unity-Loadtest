@@ -23,6 +23,7 @@ namespace ReadyPlayerMe
             var type = partner.GetType();
             var field = type.GetField("Subdomain");
             field.SetValue(partner, newSubdomain);
+            PartnerDomain = newSubdomain;
             EditorUtility.SetDirty(partner);
             AssetDatabase.SaveAssets();
         }

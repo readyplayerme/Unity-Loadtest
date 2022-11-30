@@ -41,6 +41,7 @@ namespace ReadyPlayerMe
                     if (ctxSource.IsCancellationRequested)
                     {
                         ctxSource.Dispose();
+                        throw new CustomException(FailureType.OperationCancelled, exception.Message);
                     }
 
                     throw new CustomException(exception.FailureType, exception.Message);

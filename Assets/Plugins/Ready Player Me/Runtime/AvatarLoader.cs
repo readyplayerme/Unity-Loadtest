@@ -36,15 +36,16 @@ namespace ReadyPlayerMe
 
         public AvatarLoader()
         {
-            avatarCachingEnabled = Resources.Load<AvatarLoaderSettings>(AvatarLoaderSettings.RESOURCE_PATH)?.AvatarCachingEnabled ?? false;
+            var loaderSettings = Resources.Load<AvatarLoaderSettings>(AvatarLoaderSettings.RESOURCE_PATH);
+            avatarCachingEnabled = loaderSettings && loaderSettings.AvatarCachingEnabled;
+            AvatarConfig = loaderSettings ? loaderSettings.AvatarConfig : null;
         }
 
         /// Load avatar from given url
         public void LoadAvatar(string url)
         {
             startTime = Time.timeSinceLevelLoad;
-            SDKLogger.Log(TAG, $"Started loading the avatar from URL {url}");
-
+            SDKLogger.Log(TAG, $"Started loading avatar with config {(AvatarConfig ? AvatarConfig.name : "None")} from URL {url}");
             avatarUrl = url;
             Load(url);
         }
@@ -62,6 +63,7 @@ namespace ReadyPlayerMe
             context.SaveInProjectFolder = SaveInProjectFolder;
             context.AvatarCachingEnabled = avatarCachingEnabled;
             context.AvatarConfig = AvatarConfig;
+            context.ParametersHash = AvatarCache.GetAvatarConfigurationHash(AvatarConfig);
 
             executor = new OperationExecutor<AvatarContext>(new IOperation<AvatarContext>[]
             {

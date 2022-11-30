@@ -11,5 +11,6 @@
         public AvatarRenderSettings RenderSettings;
         public byte[] Bytes;
         public object Data;
+        public string ParametersHash;
     }
 }
