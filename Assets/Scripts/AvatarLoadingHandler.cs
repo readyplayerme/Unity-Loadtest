@@ -10,6 +10,7 @@ namespace ReadyPlayerMe.Loadtest
     public class AvatarLoadingHandler : MonoBehaviour
     {
         [SerializeField] private string baseUrl = "https://api.readyplayer.me/v1/avatars/";
+        [SerializeField] private string avatarIDCSVPath = "Assets/Resources/avatar_ids.csv";
         [SerializeField] private GameObject loadingPlaceholder;
 
         private readonly List<Avatar> avatars = new List<Avatar>();
@@ -18,9 +19,16 @@ namespace ReadyPlayerMe.Loadtest
         private bool loading = false;
         private GameObject placeholderAvatar;
         private AvatarLoader avatarLoader;
+        private AvatarIDReader avatarIDReader;
         
         public event EventHandler<AvatarLoadedEventArgs> AvatarLoaded;
-        public event EventHandler<AllAvatarsLoadedEventArgs> AllAvatarsLoaded; 
+        public event EventHandler<AllAvatarsLoadedEventArgs> AllAvatarsLoaded;
+
+        private void Start()
+        {
+            avatarIDReader = new AvatarIDReader();
+            avatarIDReader.FromCSV(avatarIDCSVPath);
+        }
 
         private void Update()
         {
@@ -29,7 +37,7 @@ namespace ReadyPlayerMe.Loadtest
 
         public void LoadAvatars(int numberOfAvatarsToLoad, AvatarConfig avatarConfig)
         {
-            StartCoroutine(LoadAvatars(numberOfAvatarsToLoad, avatarConfig, AvatarIDs.AvatarList));
+            StartCoroutine(LoadAvatars(numberOfAvatarsToLoad, avatarConfig, avatarIDReader.AvatarList));
         }
 
         private void OnAvatarLoaded(AvatarLoadedEventArgs e)
@@ -136,7 +144,7 @@ namespace ReadyPlayerMe.Loadtest
 
         private void OnDestroy()
         {
-            avatarLoader.Cancel();
+            avatarLoader?.Cancel();
         }
     }
 }
