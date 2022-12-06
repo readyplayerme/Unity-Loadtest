@@ -16,7 +16,7 @@ namespace ReadyPlayerMe.Loadtest
         private readonly List<Avatar> avatars = new List<Avatar>();
         private float loadingTime = 0;
         private Vector3 loadingPosition;
-        private bool loading = false;
+        private bool loading;
         private GameObject placeholderAvatar;
         private AvatarLoader avatarLoader;
         private AvatarIDReader avatarIDReader;
