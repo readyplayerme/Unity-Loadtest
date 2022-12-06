@@ -9,7 +9,7 @@ namespace ReadyPlayerMe.Loadtest {
         public void FromCSV(string fileName)
         {
             AvatarList = new List<string>();
-            StreamReader streamReader = new StreamReader(fileName);
+            var streamReader = new StreamReader(fileName);
             var data = streamReader.ReadToEnd();
             Debug.Log(data);
             AvatarList.AddRange(data?.Split(','));
