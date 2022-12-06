@@ -89,6 +89,8 @@ namespace ReadyPlayerMe.Loadtest
             args.Avatar.transform.SetParent(gameObject.transform);
             args.Avatar.transform.position = loadingPosition;
             
+            AvatarAnimatorHelper.SetupAnimator(args.Metadata.BodyType, args.Avatar);
+            
             var avatar = args.Avatar.AddComponent<Avatar>();
             avatar.AvatarDownloaded(args.Metadata, loadingTime);
             avatars.Add(avatar);
