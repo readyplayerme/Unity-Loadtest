@@ -15,7 +15,7 @@ namespace ReadyPlayerMe.Loadtest {
                 var txt = Resources.Load(fileName) as TextAsset;
                 data = txt.text;
             #else
-                var path = Application.dataPath + "/Resources/" + fileName;
+                var path = $"{Application.dataPath}/Resources/{fileName}";
                 var streamReader = new StreamReader(fileName);
                 data = streamReader.ReadToEnd();
             #endif
