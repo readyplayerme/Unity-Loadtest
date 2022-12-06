@@ -5,9 +5,7 @@ namespace ReadyPlayerMe
     public class RuntimeExample : MonoBehaviour
     {
         [SerializeField]
-        private string avatarUrl = "https://d1a370nemizbjq.cloudfront.net/9bcc6840-8b8b-420d-a9d8-bc9c275fce8f.glb";
-        [SerializeField]
-        private AvatarConfig avatarConfig;
+        private string avatarUrl = "https://api.readyplayer.me/v1/avatars/632d65e99b4c6a4352a9b8db.glb";
 
         private GameObject avatar;
 
@@ -15,13 +13,12 @@ namespace ReadyPlayerMe
         {
             ApplicationData.Log();
             var avatarLoader = new AvatarLoader();
-            if (avatarConfig)
+            avatarLoader.OnCompleted += (_, args) =>
             {
-                avatarLoader.AvatarConfig = avatarConfig;
-            }
-            avatarLoader.OnCompleted += (_, args) => { avatar = args.Avatar; };
+                avatar = args.Avatar;
+                AvatarAnimatorHelper.SetupAnimator(args.Metadata.BodyType, avatar);
+            };
             avatarLoader.LoadAvatar(avatarUrl);
-
         }
 
         private void OnDestroy()

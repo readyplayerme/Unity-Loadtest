@@ -12,6 +12,7 @@ namespace ReadyPlayerMe
         private const int TIMEOUT = 20;
         private const string LAST_MODIFIED = "Last-Modified";
         private const string NO_INTERNET_CONNECTION = "No internet connection.";
+        private const string CLOUDFRONT_IDENTIFIER = "cloudfront";
 
         public Action<float> ProgressChanged;
 
@@ -56,9 +57,13 @@ namespace ReadyPlayerMe
                     request.timeout = timeout;
                     request.downloadHandler = new DownloadHandlerBuffer();
                     request.method = UnityWebRequest.kHttpVerbGET;
-                    foreach (var header in CommonHeaders.GetRequestHeaders())
+
+                    if (!url.Contains(CLOUDFRONT_IDENTIFIER)) // Required to prevent CORS errors in WebGL
                     {
-                        request.SetRequestHeader(header.Key, header.Value);
+                        foreach (var header in CommonHeaders.GetRequestHeaders())
+                        {
+                            request.SetRequestHeader(header.Key, header.Value);
+                        }
                     }
 
                     var asyncOperation = request.SendWebRequest();
@@ -92,10 +97,16 @@ namespace ReadyPlayerMe
                 using (var request = new UnityWebRequest(url))
                 {
                     request.timeout = timeout;
-                    request.downloadHandler = new DownloadHandlerFile(path);
-                    foreach (var header in CommonHeaders.GetRequestHeaders())
+                    var downloadHandler = new DownloadHandlerFile(path);
+                    downloadHandler.removeFileOnAbort = true;
+                    request.downloadHandler = downloadHandler;
+
+                    if (!url.Contains(CLOUDFRONT_IDENTIFIER)) // Required to prevent CORS errors in WebGL
                     {
-                        request.SetRequestHeader(header.Key, header.Value);
+                        foreach (var header in CommonHeaders.GetRequestHeaders())
+                        {
+                            request.SetRequestHeader(header.Key, header.Value);
+                        }
                     }
 
                     var asyncOperation = request.SendWebRequest();

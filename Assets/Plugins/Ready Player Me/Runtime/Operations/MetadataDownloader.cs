@@ -19,9 +19,12 @@ namespace ReadyPlayerMe
             {
                 throw new InvalidDataException($"Expected cast {typeof(string)}");
             }
-
             context.Metadata = await Download(context.AvatarUri.MetadataUrl, token);
-            context.Metadata.IsUpdated = IsUpdated(context.Metadata, context.AvatarUri, context.AvatarCachingEnabled, context.SaveInProjectFolder);
+            context.Metadata.IsUpdated = context.SaveInProjectFolder || IsUpdated(context.Metadata, context.AvatarUri, context.AvatarCachingEnabled);
+            if (context.Metadata.IsUpdated)
+            {
+                SaveToFile(context.Metadata, context.AvatarUri.Guid, context.AvatarUri.LocalMetadataPath, context.SaveInProjectFolder);
+            }
             return context;
         }
 
@@ -72,7 +75,7 @@ namespace ReadyPlayerMe
 
         public AvatarMetadata LoadFromFile(string path, bool avatarCachingEnabled)
         {
-            if (avatarCachingEnabled && File.Exists(path))
+            if (File.Exists(path))
             {
                 var json = File.ReadAllText(path);
                 return JsonConvert.DeserializeObject<AvatarMetadata>(json);
@@ -81,12 +84,10 @@ namespace ReadyPlayerMe
             return new AvatarMetadata();
         }
 
-        private bool IsUpdated(AvatarMetadata metadata, AvatarUri uri, bool avatarCachingEnabled, bool saveInProjectFolder)
+        private bool IsUpdated(AvatarMetadata metadata, AvatarUri uri, bool avatarCachingEnabled)
         {
             var previousMetadata = LoadFromFile(uri.LocalMetadataPath, avatarCachingEnabled);
-            if ((avatarCachingEnabled || saveInProjectFolder) && metadata.LastModified == previousMetadata.LastModified) return false;
-
-            SaveToFile(metadata, uri.Guid, uri.LocalMetadataPath, saveInProjectFolder);
+            if (avatarCachingEnabled && metadata.LastModified == previousMetadata.LastModified) return false;
             return true;
         }
 

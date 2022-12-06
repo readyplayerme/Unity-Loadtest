@@ -78,9 +78,6 @@ namespace ReadyPlayerMe
         private const string MASCULINE_ANIMATION_AVATAR_NAME = "AnimationAvatars/MasculineAnimationAvatar";
         private const string FEMININE_ANIMATION_AVATAR_NAME = "AnimationAvatars/FeminineAnimationAvatar";
 
-        // Animation controller
-        private const string ANIMATOR_CONTROLLER_NAME = "Avatar Animator";
-
         // Bone names
         private const string BONE_HIPS = "Hips";
         private const string BONE_ARMATURE = "Armature";
@@ -106,10 +103,7 @@ namespace ReadyPlayerMe
                 ? MASCULINE_ANIMATION_AVATAR_NAME
                 : FEMININE_ANIMATION_AVATAR_NAME;
             var animationAvatar = Resources.Load<Avatar>(animationAvatarSource);
-            var animatorController = Resources.Load<RuntimeAnimatorController>(ANIMATOR_CONTROLLER_NAME);
-
             var animator = avatar.AddComponent<Animator>();
-            animator.runtimeAnimatorController = animatorController;
             animator.avatar = animationAvatar;
             animator.applyRootMotion = true;
         }

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b50d26d65b1fce41a02e310760cd025, type: 3}
   m_Name: Avatar Loader Settings
   m_EditorClassIdentifier: 
-  AvatarCachingEnabled: 0
-  AvatarConfig: {fileID: 0}
+  AvatarCachingEnabled: 1
+  AvatarConfig: {fileID: 11400000, guid: 0721fb2c84320491182b4a7bdbd9d2d9, type: 2}
