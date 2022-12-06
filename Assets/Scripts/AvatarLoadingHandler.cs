@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -10,7 +11,6 @@ namespace ReadyPlayerMe.Loadtest
     public class AvatarLoadingHandler : MonoBehaviour
     {
         [SerializeField] private string baseUrl = "https://api.readyplayer.me/v1/avatars/";
-        [SerializeField] private string avatarIDCSVPath = "Assets/Resources/avatar_ids.csv";
         [SerializeField] private GameObject loadingPlaceholder;
 
         private readonly List<Avatar> avatars = new List<Avatar>();
@@ -25,9 +25,9 @@ namespace ReadyPlayerMe.Loadtest
         public event EventHandler<AllAvatarsLoadedEventArgs> AllAvatarsLoaded;
 
         private void Start()
-        {
+        {          
             avatarIDReader = new AvatarIDReader();
-            avatarIDReader.FromCSV(avatarIDCSVPath);
+            avatarIDReader.ReadCSVFromResources("avatar_ids.csv");
         }
 
         private void Update()

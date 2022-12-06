@@ -6,12 +6,20 @@ namespace ReadyPlayerMe.Loadtest {
     public class AvatarIDReader
     {
         public List<string> AvatarList { get; private set; }
-        public void FromCSV(string fileName)
+
+        public void ReadCSVFromResources(string fileName)
         {
             AvatarList = new List<string>();
-            var streamReader = new StreamReader(fileName);
-            var data = streamReader.ReadToEnd();
-            Debug.Log(data);
+            string data = "";
+            #if UNITY_WEBGL
+                var txt = Resources.Load(fileName) as TextAsset;
+                data = txt.text;
+            #else
+                var path = Application.dataPath + "/Resources/" + fileName;
+                var streamReader = new StreamReader(fileName);
+                data = streamReader.ReadToEnd();
+            #endif
+            
             AvatarList.AddRange(data?.Split(','));
         }
     }
