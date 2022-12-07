@@ -5,7 +5,7 @@ This sample project shows the performance of different spec'd Ready Player Me av
 This can also be embedded in your game or app, to see the performance of multiple avatars your game-scene.
 
 Try it out on itch.
-https://bernhardfercher.itch.io/ready-player-me-load-test
+https://readyplayerme.itch.io/ready-player-me-avatar-performance-test-in-unity
 
 ![2022-12-07 17 06 28](https://user-images.githubusercontent.com/42868289/206230405-377e1b66-75b5-4ec0-9926-1cf72c444063.gif)
 
