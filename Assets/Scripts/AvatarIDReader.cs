@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -10,17 +11,11 @@ namespace ReadyPlayerMe.Loadtest {
         public void ReadCSVFromResources(string fileName)
         {
             AvatarList = new List<string>();
-            string data = "";
-            #if UNITY_WEBGL
-                var txt = Resources.Load(fileName) as TextAsset;
-                data = txt.text;
-            #else
-                var path = $"{Application.dataPath}/Resources/{fileName}";
-                var streamReader = new StreamReader(fileName);
-                data = streamReader.ReadToEnd();
-            #endif
             
-            AvatarList.AddRange(data?.Split(','));
+            var txt = Resources.Load(fileName) as TextAsset;
+            var data = txt?.text;
+            
+            AvatarList.AddRange(data?.Split(',') ?? Array.Empty<string>());
         }
     }
 }
