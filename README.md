@@ -4,6 +4,9 @@ This sample project shows the performance of different spec'd Ready Player Me av
 
 This can also be embedded in your game or app, to see the performance of multiple avatars your game-scene.
 
+Try it out in your browser.
+https://bernhardfercher.itch.io/ready-player-me-load-test
+
 ![Screen Shot 2022-09-16 at 11 07 37](https://user-images.githubusercontent.com/42868289/190604314-6c6e9b0b-cb2a-4b57-ba55-56d1c2292788.png)
 
 ## How to use the avatar loader
