@@ -12,7 +12,7 @@ namespace ReadyPlayerMe.Loadtest
 {
     public class AvatarLoadingHandler : MonoBehaviour
     {
-        [SerializeField] private string baseUrl = "https://api.readyplayer.me/v1/avatars/";
+        [SerializeField] private string baseUrl = "https://models.readyplayer.me/";
         [SerializeField] private GameObject loadingPlaceholder;
 
         private readonly List<Avatar> avatars = new List<Avatar>();
