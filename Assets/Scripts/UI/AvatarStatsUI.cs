@@ -9,10 +9,7 @@ namespace ReadyPlayerMe.Loadtest.UI
         [SerializeField] private Text txtTotalLoadingTime;
         [SerializeField] private Text txtLastLoadingTime;
         [SerializeField] private Text txtCountAvatars;
-        [SerializeField] private Text txtAvgSize;
-        [SerializeField] private Text txtLastSize;
-        [SerializeField] private Text txtTotalSize;
-    
+
         [SerializeField] private AvatarLoadingHandler avatarLoadingHandler;
         
         private int numberOfAvatarsLoaded = 0;
@@ -33,10 +30,6 @@ namespace ReadyPlayerMe.Loadtest.UI
             txtAvgLoadingTime.text = $"{args.AverageLoadingTime:0.00} s";
             txtLastLoadingTime.text = $"{args.Avatar.LoadingTime:0.00} s";
             txtTotalLoadingTime.text = $"{args.SumLoadingTime:0.00} s";
-
-            //txtLastSize.text = $"{(args.Avatar.Metadata.ByteSize / 1000000):0.00} MB";
-            txtTotalSize.text = $"{(args.SumDownloadSize / 1000000):0.00} MB";
-            txtAvgSize.text = $"{(args.AverageDownloadSize / 1000000):0.00} MB";
 
             numberOfAvatarsLoaded++;
             txtCountAvatars.text = numberOfAvatarsLoaded.ToString();
