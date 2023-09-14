@@ -34,7 +34,7 @@ namespace ReadyPlayerMe.Loadtest.UI
             txtLastLoadingTime.text = $"{args.Avatar.LoadingTime:0.00} s";
             txtTotalLoadingTime.text = $"{args.SumLoadingTime:0.00} s";
 
-            txtLastSize.text = $"{(args.Avatar.Metadata.ByteSize / 1000000):0.00} MB";
+            //txtLastSize.text = $"{(args.Avatar.Metadata.ByteSize / 1000000):0.00} MB";
             txtTotalSize.text = $"{(args.SumDownloadSize / 1000000):0.00} MB";
             txtAvgSize.text = $"{(args.AverageDownloadSize / 1000000):0.00} MB";
 
