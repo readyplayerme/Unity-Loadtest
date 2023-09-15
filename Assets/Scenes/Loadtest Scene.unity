@@ -621,9 +621,6 @@ MonoBehaviour:
   txtTotalLoadingTime: {fileID: 1052062136}
   txtLastLoadingTime: {fileID: 1431937456}
   txtCountAvatars: {fileID: 404964446}
-  txtAvgSize: {fileID: 0}
-  txtLastSize: {fileID: 0}
-  txtTotalSize: {fileID: 695888085}
   avatarLoadingHandler: {fileID: 661170451}
 --- !u!114 &118640306
 MonoBehaviour:
@@ -2807,8 +2804,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15e5eea133e19457f82297e9d5db5c9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseUrl: https://api.readyplayer.me/v1/avatars/
-  loadingPlaceholder: {fileID: 1313397794220152665, guid: 9503557ffc3a54c658b97d4846266204, type: 3}
+  baseUrl: https://models.readyplayer.me/
+  loadingPlaceholder: {fileID: 6895881320538766314, guid: 33d1dcdd8b72b4c1e8b07e7cf7918253, type: 3}
 --- !u!4 &661170452
 Transform:
   m_ObjectHideFlags: 0
