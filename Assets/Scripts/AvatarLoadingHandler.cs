@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,12 +6,13 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+using ReadyPlayerMe.Core;
 
 namespace ReadyPlayerMe.Loadtest
 {
     public class AvatarLoadingHandler : MonoBehaviour
     {
-        [SerializeField] private string baseUrl = "https://api.readyplayer.me/v1/avatars/";
+        [SerializeField] private string baseUrl = "https://models.readyplayer.me/";
         [SerializeField] private GameObject loadingPlaceholder;
 
         private readonly List<Avatar> avatars = new List<Avatar>();
@@ -18,8 +20,9 @@ namespace ReadyPlayerMe.Loadtest
         private Vector3 loadingPosition;
         private bool loading;
         private GameObject placeholderAvatar;
-        private AvatarLoader avatarLoader;
         private AvatarIDReader avatarIDReader;
+        
+        private AvatarObjectLoader avatarLoader;
         
         public event EventHandler<AvatarLoadedEventArgs> AvatarLoaded;
         public event EventHandler<AllAvatarsLoadedEventArgs> AllAvatarsLoaded;
@@ -60,7 +63,7 @@ namespace ReadyPlayerMe.Loadtest
                 loading = true;
                 loadingTime = 0;
                 
-                avatarLoader = new AvatarLoader();
+                avatarLoader = new AvatarObjectLoader();
                 avatarLoader.AvatarConfig = avatarConfig;
 
                 loadingPosition = InstantiateLoadingPlaceholder();
@@ -85,6 +88,7 @@ namespace ReadyPlayerMe.Loadtest
 
         private void OnLoadingCompleted(object sender, CompletionEventArgs args)
         {
+            Debug.Log("Loaded: " + args.Metadata.BodyType);
             DestroyImmediate(placeholderAvatar);
             args.Avatar.transform.SetParent(gameObject.transform);
             args.Avatar.transform.position = loadingPosition;
@@ -140,7 +144,7 @@ namespace ReadyPlayerMe.Loadtest
         private float CalcSumDownloadSize()
         {
             float sumDownloadSize = 0;
-            avatars.ForEach((avatar) => sumDownloadSize += avatar.Metadata.ByteSize);
+            //avatars.ForEach((avatar) => sumDownloadSize += avatar.Metadata.ByteSize);
             return sumDownloadSize;
         }
 
