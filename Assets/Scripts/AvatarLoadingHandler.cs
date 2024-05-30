@@ -1,12 +1,9 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 using ReadyPlayerMe.Core;
 
@@ -14,7 +11,8 @@ namespace ReadyPlayerMe.Loadtest
 {
     public class AvatarLoadingHandler : MonoBehaviour
     {
-        [SerializeField] private string baseUrl = "https://models.readyplayer.me/";
+        private const string AVATAR_ID_CSV = "avatar_ids.csv";
+        private const string BASE_URL = "https://models.readyplayer.me/";
         [SerializeField] private GameObject loadingPlaceholder;
         [Range(1,10), SerializeField] private int maxAvatarLoaders = 1;
         [SerializeField] private RuntimeAnimatorController animatorController;
@@ -25,14 +23,17 @@ namespace ReadyPlayerMe.Loadtest
         private AvatarIDReader avatarIDReader;
         private Dictionary<string, GameObject> placeholderAvatarMap = new Dictionary<string, GameObject>();
         private AvatarObjectLoader avatarLoader;
-        
+        private float loadingStartTime;
+        private int avatarBatchToLoad = 1;
         public event EventHandler<AvatarLoadedEventArgs> AvatarLoaded;
         public event EventHandler<AllAvatarsLoadedEventArgs> AllAvatarsLoaded;
+        
+        private int numberOfFailedDownloads = 0;
 
         private void Start()
         {          
             avatarIDReader = new AvatarIDReader();
-            avatarIDReader.ReadCSVFromResources("avatar_ids.csv");
+            avatarIDReader.ReadCSVFromResources(AVATAR_ID_CSV);
         }
 
         private void Update()
@@ -59,6 +60,9 @@ namespace ReadyPlayerMe.Loadtest
 
         private IEnumerator LoadAvatars(int numberOfAvatarsToLoad, AvatarConfig avatarConfig, List<string> avatarList)
         {
+            numberOfFailedDownloads = 0;
+            loadingStartTime = Time.time;
+            avatarBatchToLoad = numberOfAvatarsToLoad;
             var semaphore = new SemaphoreSlim(maxAvatarLoaders);
 
             List<Task> downloadTasks = new List<Task>();
@@ -75,7 +79,7 @@ namespace ReadyPlayerMe.Loadtest
             yield return new WaitUntil(() => Task.WhenAll(downloadTasks).IsCompleted);
 
             OnAllAvatarsLoaded(new AllAvatarsLoadedEventArgs(CalcSumLoadingTime(), CalcSumDownloadSize()));
-            Debug.Log("All avatars loaded");
+            Debug.Log($"All avatars loaded in {CalcSumLoadingTime()} seconds. Failed downloads: {numberOfFailedDownloads} / {avatarBatchToLoad}");
         }
         
         private async Task DownloadAvatar(string avatarID, AvatarConfig avatarConfig, SemaphoreSlim semaphore)
@@ -86,12 +90,13 @@ namespace ReadyPlayerMe.Loadtest
             avatarLoader = new AvatarObjectLoader();
             avatarLoader.AvatarConfig = avatarConfig;
 
-            InstantiateLoadingPlaceholder(avatarID);
+            var avatarUrl = GetAvatarUrl(avatarID);
+            InstantiateLoadingPlaceholder(avatarUrl);
             
             avatarLoader.OnCompleted += OnLoadingCompleted;
             avatarLoader.OnFailed += OnLoadingFailed;
 
-            await avatarLoader.LoadAvatarAsync(GetAvatarUrl(avatarID));
+            await avatarLoader.LoadAvatarAsync(avatarUrl);
 
             // Release the semaphore once the download is complete
             semaphore.Release();
@@ -109,11 +114,11 @@ namespace ReadyPlayerMe.Loadtest
         {
             Debug.Log("Loaded: " + args.Metadata.BodyType);
             args.Avatar.transform.SetParent(gameObject.transform);
-            if (placeholderAvatarMap.TryGetValue(args.Avatar.name, out var placeholderObject))
+            if (placeholderAvatarMap.TryGetValue(args.Url, out var placeholderObject))
             {
                 args.Avatar.transform.position = placeholderObject.transform.position;
                 DestroyImmediate(placeholderObject);
-                placeholderAvatarMap.Remove(args.Avatar.name);
+                placeholderAvatarMap.Remove(args.Url);
             };
             
             AvatarAnimationHelper.SetupAnimator(args.Metadata, args.Avatar);
@@ -132,18 +137,25 @@ namespace ReadyPlayerMe.Loadtest
                 CalcSumLoadingTime(),
                 CalcAverageDownloadSize(), 
                 CalcSumDownloadSize()));
-                
+            
             loading = false;
         }
 
         private string GetAvatarUrl(string avatarID)
         {
-            return baseUrl + avatarID + ".glb";
+            return $"{BASE_URL}{avatarID}.glb";
         }
 
         private void OnLoadingFailed(object sender, FailureEventArgs e)
         {
-            Debug.Log("Failed: " + e.Message);
+            numberOfFailedDownloads++;
+            if (placeholderAvatarMap.TryGetValue(e.Url, out var placeholderObject))
+            {
+                DestroyImmediate(placeholderObject);
+                placeholderAvatarMap.Remove(e.Url);
+            };
+            Debug.Log($"Failed on avatar url: {e.Url} FailedTotal= ({numberOfFailedDownloads})/({avatarBatchToLoad})");
+            //Debug.Log($"Failed: {e.Message} FailedTotal= ({numberOfFailedDownloads})/({avatarBatchToLoad})");
             loading = false;
         }
 
@@ -157,6 +169,12 @@ namespace ReadyPlayerMe.Loadtest
 
         private float CalcSumLoadingTime()
         {
+            // If there are multiple avatar loaders loading asynchronously, return the time since the first avatar started loading
+            if(maxAvatarLoaders > 1)
+            {
+                
+                return Time.time - loadingStartTime;
+            }
             float sumLoadingTime = 0;
             avatars.ForEach((avatar) => sumLoadingTime += avatar.LoadingTime);
             return sumLoadingTime;
