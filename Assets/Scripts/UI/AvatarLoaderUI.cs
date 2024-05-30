@@ -56,7 +56,7 @@ namespace ReadyPlayerMe.Loadtest.UI
             {
                 var avatarConfig = GetSelectedAvatarConfig();
 
-                txtMeshLod.text = avatarConfig.MeshLod.ToString();
+                txtMeshLod.text = avatarConfig.Lod.ToString();
                 txtPose.text = avatarConfig.Pose.ToString();
                 txtTextureAtlas.text = avatarConfig.TextureAtlas.ToString();
                 txtTextureSizeLimit.text = avatarConfig.TextureSizeLimit.ToString();
