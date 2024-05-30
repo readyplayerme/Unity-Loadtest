@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44410992, g: 0.4935295, b: 0.5729552, a: 1}
+  m_IndirectSpecularColor: {r: 0.44411057, g: 0.49353075, b: 0.57295674, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2806,6 +2806,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseUrl: https://models.readyplayer.me/
   loadingPlaceholder: {fileID: 6895881320538766314, guid: 33d1dcdd8b72b4c1e8b07e7cf7918253, type: 3}
+  maxAvatarLoaders: 6
+  animatorController: {fileID: 9100000, guid: b9265456b4d9bc04593468b0675411a8, type: 2}
 --- !u!4 &661170452
 Transform:
   m_ObjectHideFlags: 0

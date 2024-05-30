@@ -2,6 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -14,14 +16,14 @@ namespace ReadyPlayerMe.Loadtest
     {
         [SerializeField] private string baseUrl = "https://models.readyplayer.me/";
         [SerializeField] private GameObject loadingPlaceholder;
-
+        [Range(1,10), SerializeField] private int maxAvatarLoaders = 1;
+        [SerializeField] private RuntimeAnimatorController animatorController;
         private readonly List<Avatar> avatars = new List<Avatar>();
         private float loadingTime = 0;
-        private Vector3 loadingPosition;
         private bool loading;
         private GameObject placeholderAvatar;
         private AvatarIDReader avatarIDReader;
-        
+        private Dictionary<string, GameObject> placeholderAvatarMap = new Dictionary<string, GameObject>();
         private AvatarObjectLoader avatarLoader;
         
         public event EventHandler<AvatarLoadedEventArgs> AvatarLoaded;
@@ -57,44 +59,69 @@ namespace ReadyPlayerMe.Loadtest
 
         private IEnumerator LoadAvatars(int numberOfAvatarsToLoad, AvatarConfig avatarConfig, List<string> avatarList)
         {
-            for (var i = 0; (i < numberOfAvatarsToLoad && i < avatarList.Count) ; i++)
-            {
-                var avatarID = avatarList[i];
-                loading = true;
-                loadingTime = 0;
-                
-                avatarLoader = new AvatarObjectLoader();
-                avatarLoader.AvatarConfig = avatarConfig;
+            var semaphore = new SemaphoreSlim(maxAvatarLoaders);
 
-                loadingPosition = InstantiateLoadingPlaceholder();
-                
-                avatarLoader.OnCompleted += OnLoadingCompleted;
-                avatarLoader.OnFailed += OnLoadingFailed;
- 
-                avatarLoader.LoadAvatar(GetAvatarUrl(avatarID));
-                
-                yield return new WaitUntil(() => !loading);
+            List<Task> downloadTasks = new List<Task>();
+            
+            for (var i = 0; i < numberOfAvatarsToLoad && i < avatarList.Count; i++)
+            {
+                yield return semaphore.WaitAsync();
+
+                var avatarID = avatarList[i];
+                downloadTasks.Add(DownloadAvatar(avatarID, avatarConfig, semaphore));
             }
-   
+
+            // Wait for all tasks to complete
+            yield return new WaitUntil(() => Task.WhenAll(downloadTasks).IsCompleted);
+
             OnAllAvatarsLoaded(new AllAvatarsLoadedEventArgs(CalcSumLoadingTime(), CalcSumDownloadSize()));
+            Debug.Log("All avatars loaded");
+        }
+        
+        private async Task DownloadAvatar(string avatarID, AvatarConfig avatarConfig, SemaphoreSlim semaphore)
+        {
+            loading = true;
+            loadingTime = 0;
+            
+            avatarLoader = new AvatarObjectLoader();
+            avatarLoader.AvatarConfig = avatarConfig;
+
+            InstantiateLoadingPlaceholder(avatarID);
+            
+            avatarLoader.OnCompleted += OnLoadingCompleted;
+            avatarLoader.OnFailed += OnLoadingFailed;
+
+            await avatarLoader.LoadAvatarAsync(GetAvatarUrl(avatarID));
+
+            // Release the semaphore once the download is complete
+            semaphore.Release();
         }
 
-        private Vector3 InstantiateLoadingPlaceholder()
+        private Vector3 InstantiateLoadingPlaceholder(string id)
         {
             var pos = Quaternion.Euler(90, 0, 0) * Random.insideUnitCircle * 15; //random position in a circle with r=15
             placeholderAvatar = Instantiate(loadingPlaceholder);
+            placeholderAvatarMap.Add(id, placeholderAvatar);
             return placeholderAvatar.transform.position = pos;
         }
 
         private void OnLoadingCompleted(object sender, CompletionEventArgs args)
         {
             Debug.Log("Loaded: " + args.Metadata.BodyType);
-            DestroyImmediate(placeholderAvatar);
             args.Avatar.transform.SetParent(gameObject.transform);
-            args.Avatar.transform.position = loadingPosition;
+            if (placeholderAvatarMap.TryGetValue(args.Avatar.name, out var placeholderObject))
+            {
+                args.Avatar.transform.position = placeholderObject.transform.position;
+                DestroyImmediate(placeholderObject);
+                placeholderAvatarMap.Remove(args.Avatar.name);
+            };
             
-            AvatarAnimatorHelper.SetupAnimator(args.Metadata.BodyType, args.Avatar);
-            
+            AvatarAnimationHelper.SetupAnimator(args.Metadata, args.Avatar);
+            var animator = args.Avatar.GetComponent<Animator>();
+            if (animator != null)
+            {
+                animator.runtimeAnimatorController = animatorController;
+            }
             var avatar = args.Avatar.AddComponent<Avatar>();
             avatar.AvatarDownloaded(args.Metadata, loadingTime);
             avatars.Add(avatar);
