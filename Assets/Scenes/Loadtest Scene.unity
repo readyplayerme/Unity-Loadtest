@@ -433,6 +433,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28be689b3af1e3a4980708e48707365c, type: 2}
   - {fileID: 11400000, guid: 6b2d6e2f6d72ce7439ff70bfd94eaa2b, type: 2}
   - {fileID: 11400000, guid: a692d9f7966d82c48bb3552b2fb6bb99, type: 2}
+  - {fileID: 11400000, guid: 014a3fe6bf1692c448455094f289c543, type: 2}
+  - {fileID: 11400000, guid: 9efbc175f7807e448ade25a2d359b877, type: 2}
+  - {fileID: 11400000, guid: 8322f127f428ebf46b853135e8668700, type: 2}
+  - {fileID: 11400000, guid: 7f1e9f4820a1d484391df7c9ab0f1175, type: 2}
+  - {fileID: 11400000, guid: 01247986b69406e4a820a1606a1613bb, type: 2}
+  - {fileID: 11400000, guid: 494f9d62ef68fba4fa993ba17bc7a71c, type: 2}
+  - {fileID: 11400000, guid: 965087b514b2d3849b344512acd6bc3c, type: 2}
+  - {fileID: 11400000, guid: 5adb27c88b702c443a2977223f4e0ad8, type: 2}
   avatarConfigDropdown: {fileID: 402153903}
   btnLoading: {fileID: 1654205745}
   sldAvatarCount: {fileID: 1494865103}

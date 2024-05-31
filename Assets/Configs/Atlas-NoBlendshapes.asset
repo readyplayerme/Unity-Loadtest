@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3663d6a9358ae4149aad3496e56d4601, type: 3}
-  m_Name: NoAtlas-ARKIT-Viseme
+  m_Name: Atlas-NoBlendshapes
   m_EditorClassIdentifier: 
   Lod: 0
   Pose: 0
-  TextureAtlas: 0
+  TextureAtlas: 3
   TextureSizeLimit: 256
   TextureChannel: 0000000001000000020000000300000004000000
   UseHands: 0
@@ -33,5 +33,4 @@ MonoBehaviour:
   - TextureChannel: 4
     PropertyName: 
   MorphTargets:
-  - Oculus Visemes
-  - ARKit
+  - none
