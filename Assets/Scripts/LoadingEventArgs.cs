@@ -6,11 +6,12 @@ namespace ReadyPlayerMe.Loadtest
     {
         public float SumLoadingTime { get; }
         public float SumDownloadSize { get; }
-
-        public AllAvatarsLoadedEventArgs(float sumLoadingTime, float sumDownloadSize)
+        public float AverageDownloadSize { get; }
+        public AllAvatarsLoadedEventArgs(float sumLoadingTime, float sumDownloadSize, float averageDownloadSize)
         {
             SumLoadingTime = sumLoadingTime;
             SumDownloadSize = sumDownloadSize;
+            AverageDownloadSize = averageDownloadSize;
         }
     }
     public class AvatarLoadedEventArgs : AllAvatarsLoadedEventArgs
@@ -19,11 +20,10 @@ namespace ReadyPlayerMe.Loadtest
         public float AverageLoadingTime { get; }
         public float AverageDownloadSize { get; }
 
-        public AvatarLoadedEventArgs(Avatar avatar, float averageLoadingTime, float sumLoadingTime, float averageDownloadSize, float sumDownloadSize) : base(sumLoadingTime, sumDownloadSize)
+        public AvatarLoadedEventArgs(Avatar avatar, float averageLoadingTime, float sumLoadingTime, float averageDownloadSize, float sumDownloadSize) : base(sumLoadingTime, sumDownloadSize, averageDownloadSize)
         {
             Avatar = avatar;
             AverageLoadingTime = averageLoadingTime;
-            AverageDownloadSize = averageDownloadSize;
         }
     }
 }

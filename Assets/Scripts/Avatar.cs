@@ -9,12 +9,13 @@ namespace ReadyPlayerMe.Loadtest
     {
         public float LoadingTime { get; private set; }
         public AvatarMetadata Metadata { get; private set; }
-        
+        public string AvatarID { get; private set; }
 
-        public void AvatarDownloaded(AvatarMetadata metadata, float avatarLoadingTime)
+        public void AvatarDownloaded(AvatarMetadata metadata, float avatarLoadingTime, string id)
         {
             Metadata = metadata;
             LoadingTime = avatarLoadingTime;
+            AvatarID = id;
         }
     }
 }

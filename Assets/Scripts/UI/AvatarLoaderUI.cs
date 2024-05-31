@@ -26,7 +26,7 @@ namespace ReadyPlayerMe.Loadtest.UI
 
         private int numberOfAvatarsToLoad = 1;
         
-        void Start()
+        private void Start()
         {
             InitUI();
             avatarLoadingHandler.AllAvatarsLoaded += OnAllAvatarsLoaded;
@@ -34,6 +34,9 @@ namespace ReadyPlayerMe.Loadtest.UI
 
         private void InitUI()
         {
+            numberOfAvatarsToLoad = (int)sldAvatarCount.value;
+            AvatarCountChanged(sldAvatarCount);
+            AvatarConfigSelected(avatarConfigDropdown);
             btnLoading.enabled = false;
 
             avatarConfigDropdown.onValueChanged.AddListener(delegate { AvatarConfigSelected(avatarConfigDropdown); });
